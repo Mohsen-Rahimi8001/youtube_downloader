@@ -82,6 +82,40 @@ class YoutubeDl(YouTube):
 
 
 if __name__ == "__main__":
+    youtube_url = input("url: ")
+    page_obj = YoutubeDl(youtube_url)
+
+    videos = page_obj.videos
+    
+    while True:
+        for i, vd in enumerate(videos):
+            print(f"[{i}] {vd}")
+
+        video_choice = videos[int(input("Enter video number: "))] 
+        video_dl_obj = Downloader(video_choice.url)
+        print(f"The video is {video_dl_obj.size / 1000000}Mb")
+        if input("Do you want to change your choice?(yes/no) ").lower() == "no":
+            break
+
+    basedir = input("Enter a path to save the video: ")
+    if not os.path.isdir(basedir):
+        raise FileNotFoundError(f"{basedir} doesn't exist.")
+
+    vid_name = input("The name of the video: ")
+
+    vid_dir = os.path.join(basedir, vid_name)
+    
+    video_dl_obj.start_download(vid_dir)
+
+    final_result = vid_dir
+
+    if input("Do you want to download subtitle?(yes/no) ").lower() == "yes":        
+        content = get_youtube_subtitle(youtube_url)
+        sub_dir = os.path.join(basedir, f"{vid_name}.srt")
+        with open(sub_dir, "w") as f:
+            f.write(content)
+
+if __name__ == "__main__2":
     youtube_url = input("Enter the url: ")
 
     page_obj = YoutubeDl(youtube_url)
